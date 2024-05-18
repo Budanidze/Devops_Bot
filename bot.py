@@ -427,7 +427,7 @@ def getReplLogsCommand(update: Update, context):
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
     stdin, stdout, stderr = client.exec_command(
-        'cat /var/log/postgresql/postgresql-14-main.log.1 | grep repl_user | tail -n 20')
+        'cat /var/log/postgresql/postgresql-14-main.log | grep repl_user | tail -n 20')
     data = stdout.read() + stderr.read()
     client.close()
     data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
