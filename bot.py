@@ -56,7 +56,7 @@ while True:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(hostname=host, username=username, password=password, port=port)
-        clinet.close
+        client.close
         break
     except (Exception, Error) as error:
         logging.error("Ошибка при подключение к RM: %s", error)
