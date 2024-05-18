@@ -416,8 +416,10 @@ def getAptListSpecific(update: Update, context):
 
 
 def getReplLogsCommand(update: Update, context):
-    docker_logs = '\n'.join([line for line in open('/var/log/postgresql/postgresql.log', 'rt') if
-                             'repl' in line.lower( > update.message.reply_text(docker_logs)
+    docker_logs=''
+    docker_logs = '\n'.join([line for line in open('/var/log/postgresql/postgresql.log', 'rt') if 'repl' in line.lower()][-20:])
+    docker_logs += '{matching[i]}\n'
+    update.message.reply_text(docker_logs)
     return ConversationHandler.END
 
 
