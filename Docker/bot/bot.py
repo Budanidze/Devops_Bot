@@ -323,7 +323,7 @@ def getServiceCommand(update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
-    stdin, stdout, stderr = client.exec_command('systemctl --type=service | head -n 10')
+    stdin, stdout, stderr = client.exec_command('systemctl --type=service --state=running | head -n 10')
     data = stdout.read() + stderr.read()
     client.close()
     data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
