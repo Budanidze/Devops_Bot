@@ -51,21 +51,6 @@ while True:
         logging.error("Ошибка при подключение к PostgreSQL не созданно: %s", error)
         time.sleep(1)
 
-while True:
-    try:
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(hostname=host, username=username, password=password, port=port)
-        stdin, stdout, stderr = client.exec_command('cat /etc/*release')
-        data = stdout.read() + stderr.read()
-        client.close()
-        data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-        print(data)
-        break
-    except (Exception, Error) as error:
-        logging.error("Ошибка при подключение к RM: %s", error)
-        time.sleep(1)
-
 def start(update: Update, context):
     user = update.effective_user
     update.message.reply_text(f'Привет {user.full_name}!')
