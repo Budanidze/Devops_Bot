@@ -421,7 +421,7 @@ def getAptListSpecific(update: Update, context):
     update.message.reply_text(data)
     return ConversationHandler.END
 
-file = open("postgresql.log")
+
 def getReplLogsCommand(update: Update, context):
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
