@@ -102,7 +102,7 @@ def AddPhones(update: Update, context):
         update.message.reply_text('Выполняется добавление номеров в базу данных')
         try:
             cursor = connection.cursor()
-            query = 'INSERT INTO PHONES (phone) VALUES '
+            query = 'INSERT INTO phones (phone) VALUES '
             query += ','.join(["(%s)" for _ in range(len(context.user_data["phones"]))])
             query += ';'
             cursor.execute(query, context.user_data["phones"])
@@ -346,7 +346,7 @@ def getEmailsCommand(update: Update, context):
 
     try:
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM Emails;")
+        cursor.execute("SELECT * FROM emails;")
         data = cursor.fetchall()
         data = str(data).replace(']', '').replace('[', '').replace('), (', ')\n(')
         update.message.reply_text(data)
@@ -368,7 +368,7 @@ def getPhoneCommand(update: Update, context):
     try:
 
         cursor = connection.cursor()
-        cursor.execute("SELECT * FROM Phones;")
+        cursor.execute("SELECT * FROM phones;")
         data = cursor.fetchall()
         data = str(data).replace(']', '').replace('[', '').replace('), (', ')\n(')
         update.message.reply_text(data)
