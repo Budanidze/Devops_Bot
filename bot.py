@@ -56,7 +56,11 @@ while True:
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(hostname=host, username=username, password=password, port=port)
-        client.close
+        stdin, stdout, stderr = client.exec_command('cat /etc/*release')
+        data = stdout.read() + stderr.read()
+        client.close()
+        data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+        print(data)
         break
     except (Exception, Error) as error:
         logging.error("Ошибка при подключение к RM: %s", error)
