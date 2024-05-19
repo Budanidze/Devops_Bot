@@ -1,0 +1,69 @@
+version: '3'
+services:
+  bot:
+    image: bot_image
+    environment:
+      TOKEN: ${TOKEN}
+      CHAT_ID: ${CHAT_ID}
+      RM_HOST: ${RM_HOST}
+      RM_PORT: ${RM_PORT}
+      RM_USER: ${RM_USER}
+      RM_PASSWORD: ${RM_PASSWORD}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+    env_file:
+      - .env
+    volumes:
+      - db_logs:/var/log/postgresql
+
+  db:
+    container_name: ${DB_HOST}
+    image: db_image
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_PASSWORD: ${RM_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+      DB_REPL_USER: ${DB_REPL_USER}
+      DB_REPL_PASSWORD: ${DB_REPL_PASSWORD}
+    command: |
+      bash -c "
+      echo 'CREATE USER $DB_REPL_USER WITH REPLICATION ENCRYPTED PASSWORD '\"'$DB_REPL_PASSWORD'\" > /docker-entrypoint-initdb.d/repl.sql;
+      docker-entrypoint.sh -c wal_level=replica -c hot_standby=on -c max_wal_senders=10 -c max_replication_slots=10 -c hot_standby_feedback=on -c logging_collector=on -c log_directory=/var/log/postgresql -c log_filename=postgresql.log -c log_statement=all -c log_replication_commands=on
+      "
+    env_file:
+      - .env
+    volumes:
+      - db_logs:/var/log/postgresql
+
+  db_repl:
+    container_name: ${DB_REPL_HOST}
+    user: postgres
+    image: db_repl_image
+    environment:
+      PGUSER: ${DB_REPL_USER}
+      PGPASSWORD: ${DB_REPL_PASSWORD}
+      PGHOST: ${DB_HOST}
+      PGPORT: ${DB_PORT}
+      PGDATABASE: ${DB_DATABASE}
+    command: |
+      bash -c "
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R
+      do
+      echo 'Waiting for primary to connect...'
+      sleep 1s
+      done
+      echo 'Backup done, starting replica...'
+      chmod 0700 /var/lib/postgresql/data
+      postgres
+      "
+    env_file:
+      - .env
+    depends_on:
+      - db
+
+volumes:
+  db_logs:
