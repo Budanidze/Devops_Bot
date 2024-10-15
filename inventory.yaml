@@ -1,12 +1,12 @@
 all:
   hosts:
     host01:
-      ansible_host: 192.168.0.101
+      ansible_host: 
       ansible_user: ansible
-      ansible_ssh_pass: 1234
+      ansible_ssh_pass: 
       TOKEN:
       CHAT_ID:
-      RM_HOST: 192.168.0.101
+      RM_HOST: 
       RM_PORT: 22
       RM_USER:
       RM_PASSWORD:
@@ -14,14 +14,14 @@ all:
       DB_PASSWORD: 1234
       DB_PORT: 5432
       DB_DATABASE: pt_bot 
-      DB_REPL_HOST: 192.168.0.102
+      DB_REPL_HOST: 
       DB_REPL_USER: repl_user
       DB_REPL_PASSWORD: repl
       REPO: https://github.com/Budanidze/Devops_bot.git
     host02:
-      ansible_host: 192.168.0.102
+      ansible_host: 
       ansible_user: ansible
       ansible_ssh_pass: 1234
-      DB_HOST: 192.168.0.101
+      DB_HOST: 
       DB_REPL_USER: repl_user
       DB_REPL_PASSWORD: repl
